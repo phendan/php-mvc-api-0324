@@ -1,0 +1,24 @@
+version: '3'
+services:
+    # HTTP Service
+    http:
+        build: .
+        volumes:
+            - './:/var/www/html'
+        ports:
+            - 80:80
+            - 443:443
+        depends_on:
+            - db
+    # Database service
+    db:
+        image: mysql:latest
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+        volumes:
+            - './database:/docker-entrypoint-initdb.d'
+        ports:
+            - 3306:3306
