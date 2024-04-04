@@ -2,14 +2,15 @@
 
 namespace App;
 
+use App\Controllers\NotFoundController;
 use App\Request;
 
 class Router {
     private array $routes = [];
 
-    private string $controller;
-    private string $method;
-    private array $params;
+    private string $controller = NotFoundController::class;
+    private string $method = 'index';
+    private array $params = [];
 
     public function handleRequest(Request $request)
     {
@@ -69,7 +70,7 @@ class Router {
     {
         $request->setParams($this->params);
 
-        $controller = new $this->controller();
+        $controller = new $this->controller;
         $controller->{$this->method}($request);
     }
 

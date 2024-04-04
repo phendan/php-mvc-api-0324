@@ -2,10 +2,12 @@
 
 namespace App\Controllers;
 
-class RegisterController {
+use App\Controllers\BaseController;
+
+class RegisterController extends BaseController {
     public function index()
     {
-        echo 'hello from register index';
+        $this->response->view('register');
     }
 
     public function create()

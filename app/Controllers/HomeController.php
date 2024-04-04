@@ -3,10 +3,11 @@
 namespace App\Controllers;
 
 use App\Request;
+use App\Controllers\BaseController;
 
-class HomeController {
+class HomeController extends BaseController {
     public function index(Request $request)
     {
-        echo 'hello from home';
+        $this->response->view('home', [ 'test' => 1 ], 200);
     }
 }
