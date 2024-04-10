@@ -34,4 +34,6 @@ if (env('ENVIRONMENT') === 'dev') {
     error_reporting(E_ALL);
 }
 
+session_start();
+
 new App\App;

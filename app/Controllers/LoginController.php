@@ -6,13 +6,9 @@ use App\Controllers\BaseController;
 use App\Request;
 use App\Models\FormValidation;
 use App\Models\User;
+use Exception;
 
-class RegisterController extends BaseController {
-    public function index()
-    {
-        $this->response->view('register');
-    }
-
+class LoginController extends BaseController {
     public function create(Request $request)
     {
         if (!$request->expectsJson()) {
@@ -25,11 +21,8 @@ class RegisterController extends BaseController {
         $validation = new FormValidation($input, $this->db);
 
         $validation->setRules([
-            'email' => 'required|email|available:users',
-            'firstName' => 'required|min:2',
-            'lastName' => 'required|min:2',
+            'email' => 'required|email',
             'password' => 'required|min:6',
-            'passwordAgain' => 'required|matches:password'
         ]);
 
         $validation->validate();
@@ -43,7 +36,16 @@ class RegisterController extends BaseController {
         // User in DB speichern
         $user = new User($this->db);
 
-        $user->register($input['email'], $input['firstName'], $input['lastName'], $input['password']);
+        try {
+            $user->login($input['email'], $input['password']);
+        } catch (Exception $e) {
+            return $this->response->json(422, [
+                'errors' => [
+                    'login' => $e->getMessage()
+                ]
+            ]);
+        }
+
 
         $this->response->json(201, []);
     }
