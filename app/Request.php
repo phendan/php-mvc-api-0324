@@ -5,13 +5,15 @@ namespace App;
 use App\Helpers\Security;
 use App\Helpers\Str;
 
-class Request {
+class Request
+{
     private array $pageParams;
     private array $headers;
 
     public function __construct()
     {
         $this->parseHeaders();
+        $this->handleCors();
     }
 
     public function getUrl(): string
@@ -80,5 +82,35 @@ class Request {
     {
         return in_array('Accept', array_keys($this->headers)) &&
             str_contains($this->headers['Accept'], 'application/json');
+    }
+
+    private function handleCors(): void
+    {
+        // Allow requests from any origin
+        // header('Access-Control-Allow-Origin: *');
+
+        // Decide if the origin of the current request is one we want to allow
+        if (isset($this->headers['Origin']) && in_array($this->headers['Origin'], $this->getAllowedOrigins())) {
+            header("Access-Control-Allow-Origin: {$this->headers['Origin']}");
+            header('Access-Control-Allow-Credentials: true');
+        }
+
+        if ($this->getMethod() === 'OPTIONS') {
+            if (isset($this->headers['Access-Control-Request-Method'])) {
+                header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+            }
+
+            if (isset($this->headers['Access-Control-Request-Headers'])) {
+                $requestHeaders = $this->headers['Access-Control-Request-Headers'];
+                header("Access-Control-Allow-Headers: {$requestHeaders}");
+            }
+
+            exit;
+        }
+    }
+
+    private function getAllowedOrigins(): array
+    {
+        return explode(', ', env('CLIENT_URL'));
     }
 }
