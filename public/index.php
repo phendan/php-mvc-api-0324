@@ -11,7 +11,7 @@ function dd(...$values)
 // (UNIX Systems use '/', Windows uses '\')
 function path(string $path)
 {
-    return str_replace(['/', '\\'],  DIRECTORY_SEPARATOR, $path);
+    return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
 }
 
 require_once path(__DIR__ . '/../vendor/autoload.php');
@@ -34,6 +34,11 @@ if (env('ENVIRONMENT') === 'dev') {
     error_reporting(E_ALL);
 }
 
+session_set_cookie_params([
+    'httponly' => true,
+    'secure' => env('ENVIRONMENT') === 'dev' ? false : true
+]);
+
 session_start();
 
-new App\App;
+new App\App();

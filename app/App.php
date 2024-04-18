@@ -8,10 +8,13 @@ use App\Router;
 use App\Controllers\{
     HomeController,
     LoginController,
-    RegisterController
+    RegisterController,
+    UserController,
+    TaskController
 };
 
-class App {
+class App
+{
     public function __construct()
     {
         $request = new Request();
@@ -28,6 +31,8 @@ class App {
         // $router->get('/register', [RegisterController::class, 'index']);
         $router->post('/register', [RegisterController::class, 'create']);
         $router->post('/login', [LoginController::class, 'create']);
+        $router->get('/user', [UserController::class, 'index']);
+        $router->post('/task/:taskId', [TaskController::class, 'update']);
 
         $router->get('/users/:id', [RegisterController::class, 'index']);
         $router->get('/users/friends', [RegisterController::class, 'index']);

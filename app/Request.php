@@ -49,7 +49,7 @@ class Request
             'post' => Security::sanitizeInput($_POST),
             'get' => Security::sanitizeInput($_GET),
             'file' => $_FILES,
-            'json' => json_decode(file_get_contents('php://input'), true)
+            'json' => json_decode(file_get_contents('php://input'), true) ?? []
         };
 
         return $input;

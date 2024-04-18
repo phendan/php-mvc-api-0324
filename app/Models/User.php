@@ -76,4 +76,72 @@ class User
         // User einloggen
         $_SESSION['userId'] = (int) $this->id;
     }
+
+    public function isSignedIn(): bool
+    {
+        return isset($_SESSION['userId']);
+    }
+
+    public function getSessionId(): int
+    {
+        return $_SESSION['userId'];
+    }
+
+    public function getId(): int
+    {
+        return (int) $this->id;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function getFirstName(): string
+    {
+        return $this->firstName;
+    }
+
+    public function getLastName(): string
+    {
+        return $this->lastName;
+    }
+
+    public function getCreatedAt(): int
+    {
+        return (int) $this->createdAt;
+    }
+
+    public function getUpdatedAt(): int
+    {
+        // return date('D, d.m.Y. H:i:s');
+        return (int) $this->updatedAt;
+    }
+
+    public function getTasks(): array
+    {
+        $sql = "SELECT * FROM `to_dos` WHERE `user_id` = :userId";
+        $tasksQuery = $this->db->query($sql, [ 'userId' => $this->getId() ]);
+
+        $tasks = [];
+        foreach ($tasksQuery->results() as $result) {
+            $task = new Task($this->db, $result);
+            $tasks[] = $task->getData();
+        }
+
+        return $tasks;
+    }
+
+    public function getData(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'email' => $this->getEmail(),
+            'firstName' => $this->getFirstName(),
+            'lastName' => $this->getLastName(),
+            'createdAt' => $this->getCreatedAt(),
+            'updatedAt' => $this->getUpdatedAt(),
+            'tasks' => $this->getTasks(),
+        ];
+    }
 }
